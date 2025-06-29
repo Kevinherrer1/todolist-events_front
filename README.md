@@ -1,12 +1,33 @@
-# React + Vite
+# 🎉 Eventify
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Eventify** es una aplicación web diseñada para ayudarte a **gestionar tus eventos** importantes mediante una **cuenta regresiva visual** y una lista de **tareas organizadas por evento**. Perfecto para estudiantes, profesionales o cualquier persona que quiera estar al día con sus planes.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Características principales
 
-## Expanding the ESLint configuration
+- 📅 Crea eventos con fechas específicas
+- ⏳ Visualiza cuántos días faltan para cada evento
+- ✅ Agrega y gestiona tareas asociadas a cada evento
+- 🗂️ Marca tareas como completadas
+- 🔍 Filtra tus eventos por nombre
+- 🔄 Soporte para múltiples eventos simultáneamente
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🛠️ Tecnologías utilizadas
+
+- **Frontend**: React + Vite + TailwindCSS
+- **Backend**: NestJS + PostgreSQL
+- **ORM**: TypeORM
+- **Despliegue**: Render
+
+---
+
+## ⚙️ Instalación local
+
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/tu-usuario/eventify.git
+cd eventify
