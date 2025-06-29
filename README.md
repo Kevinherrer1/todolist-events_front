@@ -1,4 +1,4 @@
-# 📆 Eventify - Event Countdown & Task Manager
+# 📆 Eventify - Cuenta regresiva de eventos & administrador de tareas
 
 🌐 **Demo en vivo**
 
