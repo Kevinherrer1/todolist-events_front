@@ -89,104 +89,148 @@ const EventList = () => {
     setTaskLoading((prev) => ({ ...prev, [eventId]: false }));
   };
 
-  const filteredEvents = events.filter((event) =>
-    event.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const handleDeleteEvent = async (eventId) => {
+    await api.delete(`/events/${eventId}`);
+    fetchEvents();
+  };
+
+  const filteredEvents = events
+    .filter((event) => event.title.toLowerCase().includes(search.toLowerCase()))
+    .sort((a, b) => {
+      const daysA = daysUntil(a.eventDate);
+      const daysB = daysUntil(b.eventDate);
+      return daysA - daysB;
+    });
 
   return (
-    <div className="bg-[#faf7ef] rounded-xl shadow p-8 max-w-2xl mx-auto">
-      <h2 className="text-3xl font-bold mb-6 text-gray-900">Advanced Todo List</h2>
-      <div className="flex gap-2 mb-4">
-        <input
-          type="text"
-          placeholder="Search events..."
-          value={search}
-          onChange={handleSearch}
-          className="flex-1 border border-gray-300 rounded px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-black"
-        />
+    <div className="min-h-screen bg-[#0e0e10] flex flex-col items-center justify-center py-12">
+      {/* Card: Crear evento */}
+      <div className="bg-[#151518] rounded-2xl shadow-lg p-8 max-w-2xl w-full border border-[#23232a] mb-8">
+        <h2 className="text-2xl font-bold mb-6 text-white">Añadir Nuevo Evento</h2>
+        <form onSubmit={handleCreateEvent} className="flex flex-col md:flex-row gap-2 mb-2">
+          <input
+            type="text"
+            name="title"
+            placeholder="Crea un nuevo evento"
+            value={newEvent.title}
+            onChange={handleInputChange}
+            className="flex-1 border border-[#23232a] rounded bg-[#23232a] text-white px-3 py-2 placeholder-gray-400"
+            required
+          />
+          <input
+            type="date"
+            name="eventDate"
+            value={newEvent.eventDate}
+            onChange={handleInputChange}
+            className="border border-[#23232a] rounded bg-[#23232a] text-white px-3 py-2 placeholder-gray-400"
+            required
+          />
+          <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700 transition-transform duration-200 hover:scale-105">Add</button>
+        </form>
       </div>
-      <form onSubmit={handleCreateEvent} className="flex flex-col md:flex-row gap-2 mb-6">
-        <input
-          type="text"
-          name="title"
-          placeholder="Add a new event"
-          value={newEvent.title}
-          onChange={handleInputChange}
-          className="flex-1 border border-gray-300 rounded px-3 py-2 bg-white"
-          required
-        />
-        <input
-          type="date"
-          name="eventDate"
-          value={newEvent.eventDate}
-          onChange={handleInputChange}
-          className="border border-gray-300 rounded px-3 py-2 bg-white"
-          required
-        />
-        <button type="submit" className="bg-black text-white px-6 py-2 rounded font-bold hover:bg-gray-800">Add</button>
-      </form>
-      <div className="divide-y divide-gray-200 bg-white rounded-xl shadow">
-        {filteredEvents.map((event) => {
-          const days = daysUntil(event.eventDate);
-          let dateLabel = '';
-          let dateColor = '';
-          if (days === 0) {
-            dateLabel = 'Today';
-            dateColor = 'bg-red-500';
-          } else if (days < 0) {
-            dateLabel = 'Overdue';
-            dateColor = 'bg-red-700';
-          } else {
-            dateLabel = `${days} days`;
-            dateColor = 'bg-gray-300';
-          }
-          return (
-            <div key={event.id} className="flex flex-col py-4 px-4 hover:bg-[#f5f3ea] transition cursor-pointer">
-              <div className="flex items-center gap-3" onClick={() => handleExpand(event.id)}>
-                <span className="text-2xl cursor-move select-none">⋮⋮</span>
-                <input type="checkbox" className="w-5 h-5" disabled />
-                <span className="font-medium text-lg flex-1">{event.title}</span>
-                <span className={`text-white px-3 py-1 rounded-full text-xs font-bold ${dateColor}`}>{dateLabel}</span>
-                <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold ml-2">Personal</span>
-              </div>
-              {expandedEventId === event.id && (
-                <div className="mt-3 ml-8 bg-[#f8f6ef] p-3 rounded">
-                  <form onSubmit={(e) => handleCreateTask(event.id, e)} className="flex gap-2 mb-3">
-                    <input
-                      type="text"
-                      placeholder="Add a new task"
-                      value={newTask[event.id] || ''}
-                      onChange={(e) => handleTaskInputChange(event.id, e.target.value)}
-                      className="flex-1 border border-gray-300 rounded px-3 py-2 bg-white"
-                      required
-                    />
-                    <button type="submit" className="bg-black text-white px-4 py-2 rounded font-bold hover:bg-gray-800" disabled={taskLoading[event.id]}>Add Task</button>
-                  </form>
-                  <h4 className="font-bold mb-2 text-gray-700">Tareas</h4>
-                  <ul>
-                    {(tasks[event.id] || []).length === 0 && <li className="text-gray-400">Sin tareas</li>}
-                    {(tasks[event.id] || []).map((task) => (
-                      <li key={task.id} className="flex items-center gap-2 mb-1">
-                        <input
-                          type="checkbox"
-                          checked={task.isCompleted}
-                          onChange={() => handleToggleTask(event.id, task)}
-                          className="w-4 h-4 cursor-pointer"
-                        />
-                        <span className={task.isCompleted ? 'line-through text-gray-400' : ''}>{task.description}</span>
-                      </li>
-                    ))}
-                  </ul>
+
+      {/* Card: Lista de eventos */}
+      <div className="bg-[#151518] rounded-2xl shadow-lg p-8 max-w-2xl w-full border border-[#23232a]">
+        <h2 className="text-2xl font-bold mb-6 text-white">Tus Eventos</h2>
+        <div className="flex gap-2 mb-4">
+          <input
+            type="text"
+            placeholder="Buscar evento..."
+            value={search}
+            onChange={handleSearch}
+            className="flex-1 border border-[#23232a] rounded bg-[#23232a] text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+          />
+        </div>
+        <div className="divide-y divide-[#23232a] bg-[#1e1e22] rounded-xl shadow">
+          {filteredEvents.map((event) => {
+            const days = daysUntil(event.eventDate);
+            let dateLabel = '';
+            let dateColor = '';
+            if (days === 0) {
+              dateLabel = 'Today';
+              dateColor = 'bg-red-500';
+            } else if (days < 0) {
+              dateLabel = 'Overdue';
+              dateColor = 'bg-red-700';
+            } else {
+              dateLabel = `${days} days`;
+              dateColor = 'bg-gray-700';
+            }
+            return (
+              <div key={event.id} className="flex flex-col py-4 px-4 hover:bg-[#23232a] transition cursor-pointer rounded-xl">
+                <div className="flex items-center gap-3" onClick={() => handleExpand(event.id)}>
+                  <span className="text-2xl cursor-move select-none text-gray-500">⋮⋮</span>
+                  <input type="checkbox" className="w-5 h-5 accent-blue-600" disabled />
+                  <span className="font-medium text-lg flex-1 text-white">{event.title}</span>
+                  <span className="relative flex items-center justify-center w-14 h-14 mr-2">
+                    <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="7" y="14" width="42" height="32" rx="7" fill="none" stroke="white" strokeWidth="3"/>
+                      <rect x="7" y="14" width="42" height="7" rx="3.5" fill="none" stroke="white" strokeWidth="3"/>
+                      <rect x="16" y="7" width="3.5" height="10.5" rx="1.75" fill="white"/>
+                      <rect x="36.5" y="7" width="3.5" height="10.5" rx="1.75" fill="white"/>
+                    </svg>
+                    <span className="absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4">
+                      <span className="bg-blue-700 text-white text-xs font-bold rounded-full px-1.5 py-0.5 border border-[#23232a] shadow flex items-center gap-0.5" style={{minWidth: '1.5rem', textAlign: 'center'}}>
+                        {days} <span className="text-[10px] font-normal">días</span>
+                      </span>
+                    </span>
+                  </span>
+                  <button
+                    className="ml-2 group"
+                    onClick={e => { e.stopPropagation(); handleDeleteEvent(event.id); }}
+                    title="Eliminar evento"
+                    style={{ padding: 0, background: 'none', border: 'none' }}
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                      className="transition-transform duration-200 group-hover:scale-125"
+                    >
+                      <path d="M3 6h18" stroke="red" strokeWidth="2" strokeLinecap="round"/>
+                      <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="red" strokeWidth="2" strokeLinecap="round"/>
+                      <rect x="5" y="6" width="14" height="14" rx="2" stroke="red" strokeWidth="2"/>
+                      <path d="M10 11v6" stroke="red" strokeWidth="2" strokeLinecap="round"/>
+                      <path d="M14 11v6" stroke="red" strokeWidth="2" strokeLinecap="round"/>
+                    </svg>
+                  </button>
                 </div>
-              )}
-            </div>
-          );
-        })}
-        {filteredEvents.length === 0 && (
-          <div className="text-center text-gray-400 py-8">No hay eventos</div>
-        )}
+                {expandedEventId === event.id && (
+                  <div className="mt-3 ml-8 bg-[#23232a] p-3 rounded-xl">
+                    <form onSubmit={(e) => handleCreateTask(event.id, e)} className="flex gap-2 mb-3">
+                      <input
+                        type="text"
+                        placeholder="Add a new task"
+                        value={newTask[event.id] || ''}
+                        onChange={(e) => handleTaskInputChange(event.id, e.target.value)}
+                        className="flex-1 border border-[#23232a] rounded bg-[#1e1e22] text-white px-3 py-2 placeholder-gray-400"
+                        required
+                      />
+                      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded font-bold hover:bg-blue-700 transition-transform duration-200 hover:scale-105" disabled={taskLoading[event.id]}>Add Task</button>
+                    </form>
+                    <h4 className="font-bold mb-2 text-gray-200">Tareas</h4>
+                    <ul>
+                      {(tasks[event.id] || []).length === 0 && <li className="text-gray-500">Sin tareas</li>}
+                      {(tasks[event.id] || []).map((task) => (
+                        <li key={task.id} className="flex items-center gap-2 mb-1">
+                          <input
+                            type="checkbox"
+                            checked={task.isCompleted}
+                            onChange={() => handleToggleTask(event.id, task)}
+                            className="w-4 h-4 accent-blue-600 cursor-pointer"
+                          />
+                          <span className={task.isCompleted ? 'line-through text-gray-400' : 'text-white'}>{task.description}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+          {filteredEvents.length === 0 && (
+            <div className="text-center text-gray-500 py-8 bg-[#23232a] rounded-xl">No hay eventos</div>
+          )}
+        </div>
+        {loading && <div className="text-center text-gray-400 mt-4">Cargando...</div>}
       </div>
-      {loading && <div className="text-center text-gray-500 mt-4">Cargando...</div>}
     </div>
   );
 };
