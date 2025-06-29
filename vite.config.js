@@ -14,4 +14,11 @@ export default defineConfig({
       },
     },
   },
+  preview: {
+    port: 10000,
+    host: true,
+    allowedHosts: [
+      'todolist-events-front.onrender.com'
+    ]
+  }
 })

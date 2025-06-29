@@ -1,39 +1,64 @@
 import axios from 'axios';
 
-// Configuración base de axios
-const API_BASE_URL = import.meta.env.PROD 
-  ? 'http://localhost:3000' // URL del backend en producción
-  : '/api'; // Usar proxy en desarrollo
+// Configuración de la API
+const API_BASE_URL = 'http://localhost:3000'; // Puerto por defecto de NestJS
 
-const api = axios.create({
+// Crear instancia de axios con configuración base
+const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true,
 });
 
 // Interceptor para manejar errores
-api.interceptors.response.use(
+apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('API Error:', error);
+    console.error('API Error:', error.response?.data || error.message);
     return Promise.reject(error);
   }
 );
 
-// Interceptor para agregar token de autenticación (si lo necesitas)
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
+// Servicio de API
+export const api = {
+  // Eventos
+  getEvents: async () => {
+    const response = await apiClient.get('/events');
+    return response.data;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+
+  createEvent: async (eventData) => {
+    const response = await apiClient.post('/events', eventData);
+    return response.data;
+  },
+
+  deleteEvent: async (eventId) => {
+    const response = await apiClient.delete(`/events/${eventId}`);
+    return response.data;
+  },
+
+  // Tareas
+  getTasks: async (eventId) => {
+    const response = await apiClient.get(`/events/${eventId}/tasks`);
+    return response.data;
+  },
+
+  createTask: async (eventId, taskData) => {
+    const response = await apiClient.post(`/events/${eventId}/tasks`, taskData);
+    return response.data;
+  },
+
+  updateTask: async (eventId, taskId, updateData) => {
+    const response = await apiClient.patch(`/events/${eventId}/tasks/${taskId}`, updateData);
+    return response.data;
+  },
+
+  // Test de conexión
+  testConnection: async () => {
+    const response = await apiClient.get('/test');
+    return response.data;
+  },
+};
 
 export default api; 
