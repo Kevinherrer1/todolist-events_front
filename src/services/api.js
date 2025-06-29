@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Configuración de la API
-const API_BASE_URL = 'http://localhost:3000'; // Puerto por defecto de NestJS
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 // Crear instancia de axios con configuración base
 const apiClient = axios.create({
