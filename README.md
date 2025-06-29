@@ -31,6 +31,17 @@
 - ⚡ Animaciones suaves y componentes intuitivos
 - 🧩 Visualización clara del estado de cada evento y sus tareas
 
+  ## 🤖 Uso de IA
+
+Este proyecto fue apoyado por herramientas de Inteligencia Artificial para agilizar el proceso de desarrollo y mejorar la calidad del resultado final:
+
+- **ChatGPT (OpenAI):** Asistencia en la generación de código para frontend (React + Vite) y backend (NestJS), así como validaciones, rutas y lógica CRUD.
+- **Sugerencias de diseño:** Uso de IA para definir el tono visual de la landing page y estructura del dashboard, orientado a una interfaz moderna y funcional.
+- **Refactorización de código:** Sugerencias para mejorar la estructura, legibilidad y buenas prácticas tanto en React como en NestJS.
+- **Optimización UX:** Recomendaciones sobre organización visual, títulos persuasivos, textos motivacionales en el dashboard y estructura de secciones.
+
+> 🧠 Aunque no se integró IA en la lógica funcional del sistema, se utilizó como soporte para acelerar el desarrollo, planificar mejor las funcionalidades, y mejorar la experiencia de usuario en general.
+
 ---
 
 ## 🛠️ Características técnicas
