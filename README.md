@@ -1,12 +1,5 @@
 # 📆 Eventify - Cuenta regresiva de eventos & administrador de tareas
 
-🌐 **Demo en vivo**
-
-- Frontend: https://eventify-frontend.onrender.com  
-- Backend API: https://eventify-backend.onrender.com
-
----
-
 ## 💡 Idea
 
 **Eventify** es una aplicación web moderna y responsiva para **crear eventos con cuenta regresiva** y asignar **tareas** relacionadas a cada evento. Pensado para estudiantes, profesionales o cualquier persona que necesita mantener sus actividades organizadas.
