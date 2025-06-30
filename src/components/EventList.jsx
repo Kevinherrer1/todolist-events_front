@@ -364,9 +364,9 @@ export default function EventList() {
                           </div>
 
                           <div className="flex-1 min-w-0">
-                            <h3 className="text-lg font-semibold text-white mb-1 truncate">{event.title}</h3>
+                            <h3 className="text-lg font-semibold text-white mb-1 break-words whitespace-normal">{event.title}</h3>
                             {event.description && (
-                              <p className="text-sm text-slate-400 truncate">{event.description}</p>
+                              <p className="text-sm text-slate-400 break-words whitespace-normal">{event.description}</p>
                             )}
                             {eventTasks.length > 0 && (
                               <div className="flex items-center gap-2 mt-2">
